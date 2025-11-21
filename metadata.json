@@ -1,0 +1,5 @@
+{
+  "name": "PromptForge",
+  "description": "An intuitive SaaS tool that transforms simple, natural language ideas into well-structured, detailed, and optimized JSON-formatted prompts for Large Language Models.",
+  "requestFramePermissions": []
+}
