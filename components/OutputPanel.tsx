@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -122,14 +121,29 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ jsonOutput, isLoading,
                 style={getThemeStyles(isDark)}
                 useInlineStyles={true}
                 renderer={({ rows }) => {
-                  return rows.map((row, i) => (
-                    <div key={i} style={row.properties?.style}>
-                      {row.children?.map((token, j) => {
-                        const isProperty = token.properties?.className?.includes('property');
-                        const value = token.children?.[0]?.value || '';
+                  if (!rows) return [];
+                  return rows.map((row: any, i: number) => (
+                    <div key={i} style={row?.properties?.style}>
+                      {row?.children?.map((token: any, j: number) => {
+                        if (!token) return null;
+                        
+                        // Defensive property extraction to fix TS18048
+                        const properties = (token as any).properties;
+                        const tokenProps = properties || {};
+                        
+                        const className = tokenProps.className;
+                        const isProperty = Array.isArray(className) 
+                          ? className.includes('property') 
+                          : typeof className === 'string' && className.includes('property');
+                        
+                        const tokenChildren = (token as any).children;
+                        const value = (tokenChildren && tokenChildren[0]?.value) || '';
+                        
+                        const styleFromProps = tokenProps.style || {};
                         const customStyle = isProperty 
-                          ? { ...token.properties.style, color: getPropertyColor(String(value), isDark) }
-                          : token.properties?.style;
+                          ? { ...styleFromProps, color: getPropertyColor(String(value), isDark) }
+                          : styleFromProps;
+                          
                         return <span key={j} style={customStyle}>{value}</span>;
                       })}
                     </div>
