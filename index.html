@@ -4,31 +4,135 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PromptForge</title>
+    <title>Prompt Forge | LLM Architecture</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@400;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Inter', 'sans-serif'],
+              serif: ['DM Serif Display', 'serif'],
+              mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              vesper: {
+                cream: '#F8F0E5',
+                pink: '#EAB8D3',
+                black: '#000000',
+                muted: '#666666',
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <style type="text/css">
+      :root {
+        --background: #F8F0E5;
+        --foreground: #000000;
+        --primary: #EAB8D3;
+        --border-color: #000000;
+        --scrollbar-thumb: #000000;
+      }
+
+      .dark {
+        --background: #0A0A0A;
+        --foreground: #F8F0E5;
+        --primary: #EAB8D3;
+        --border-color: rgba(248, 240, 229, 0.2);
+        --scrollbar-thumb: #F8F0E5;
+      }
+
       body {
+        background-color: var(--background);
+        color: var(--foreground);
         font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      .vesper-logo {
+        font-family: 'DM Serif Display', serif;
+        font-style: italic;
+        font-weight: 400;
+      }
+
+      .vesper-hero {
+        font-family: 'Inter', sans-serif;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+      }
+
+      .vesper-button {
+        border: 1.5px solid var(--border-color);
+        border-radius: 9999px;
+        font-weight: 700;
+        transition: all 0.2s ease;
+      }
+
+      .vesper-button:hover {
+        background-color: var(--foreground) !important;
+        color: var(--background) !important;
+      }
+
+      .vesper-input-line {
+        border: none;
+        border-bottom: 1.5px solid var(--border-color);
+        background: transparent;
+        border-radius: 0;
+      }
+
+      .vesper-input-line:focus {
+        outline: none;
+        border-bottom-width: 2.5px;
+      }
+
+      pre {
+        background: transparent !important;
+      }
+      
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--scrollbar-thumb);
+        border-radius: 4px;
+      }
+
+      .scrollbar-light::-webkit-scrollbar-thumb {
+        background: #000000;
+      }
+      .dark .scrollbar-light::-webkit-scrollbar-thumb {
+        background: #F8F0E5;
       }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.29.0",
-    "react-syntax-highlighter": "https://aistudiocdn.com/react-syntax-highlighter@^15.5.0/dist/esm/index.js",
-    "react-syntax-highlighter/": "https://aistudiocdn.com/react-syntax-highlighter@^15.5.0/",
-    "pako": "https://aistudiocdn.com/pako@^2.1.0/dist/pako.esm.mjs"
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react": "https://esm.sh/react@^19.2.4",
+    "framer-motion": "https://esm.sh/framer-motion@^12.29.2",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.39.0",
+    "pako": "https://esm.sh/pako@^2.1.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "vite": "https://esm.sh/vite@^7.3.1",
+    "react-syntax-highlighter": "https://esm.sh/react-syntax-highlighter@^16.1.0"
   }
 }
 </script>
 </head>
-  <body class="bg-gray-900 text-white">
+  <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

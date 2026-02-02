@@ -2,15 +2,12 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import type { StructuredPrompt } from '../types';
 
-const API_KEY = process.env.API_KEY;
+// Fix: Use process.env.API_KEY directly in the named parameter constructor as per guidelines
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-if (!API_KEY) {
-  throw new Error("API_KEY environment variable is not set.");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY });
-
-const responseSchema: import("@google/genai").Schema<keyof StructuredPrompt> = {
+// Defined with a looser type to avoid potential transpilation or import issues 
+// with complex generic types from the SDK in this environment.
+const responseSchema: any = {
   type: Type.OBJECT,
   properties: {
     role: {
@@ -35,7 +32,6 @@ const responseSchema: import("@google/genai").Schema<keyof StructuredPrompt> = {
       properties: {
         language: { type: Type.STRING, description: "The programming or markup language for the output, e.g., 'python'." },
         style: { type: Type.STRING, description: "Stylistic guidelines for the output, e.g., 'Clean, well-commented code'." },
-        // FIX: Removed unsupported 'nullable' property from schema.
         executable: { type: Type.BOOLEAN, description: "Whether the output should be directly executable." }
       },
       required: ['language', 'style']
@@ -51,10 +47,10 @@ const responseSchema: import("@google/genai").Schema<keyof StructuredPrompt> = {
 
 export const generateStructuredPrompt = async (idea: string): Promise<string> => {
   try {
+    // Fix: Use gemini-3-pro-preview for complex reasoning and structured generation tasks
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3-pro-preview",
       contents: `Transform the following simple prompt idea into a detailed, structured JSON prompt: "${idea}"`,
-      // FIX: Moved systemInstruction into the config object.
       config: {
         responseMimeType: "application/json",
         responseSchema: responseSchema,
@@ -63,7 +59,8 @@ export const generateStructuredPrompt = async (idea: string): Promise<string> =>
       },
     });
 
-    const text = response.text.trim();
+    // Fix: Access the text property directly (not a method) and handle potential undefined values
+    const text = response.text?.trim();
     if (!text) {
       throw new Error("Received an empty response from the API.");
     }

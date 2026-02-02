@@ -1,7 +1,9 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
+
+// Safety for "React is not defined" error in some transpilers
+(window as any).React = React;
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

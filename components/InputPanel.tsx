@@ -1,5 +1,6 @@
 import React from 'react';
-import { ForgeIcon, LoadingSpinnerIcon } from './icons';
+import { motion } from 'framer-motion';
+import { LoadingSpinnerIcon } from './icons';
 
 interface InputPanelProps {
   value: string;
@@ -10,140 +11,53 @@ interface InputPanelProps {
   onClear: () => void;
 }
 
-const templateLibrary = [
-    {
-        name: "Code Generation",
-        templates: [
-            {
-                title: "Python Script",
-                prompt: "Create a Python script that [describe the script's function, e.g., 'reads a CSV file and calculates the average of a specific column'] and handles errors like [mention a potential error, e.g., 'the file not being found']."
-            },
-            {
-                title: "SQL Query",
-                prompt: "Write an SQL query for a table named `[table_name]` to select [specify columns] where [specify condition, e.g., 'the creation_date is within the last 30 days']."
-            },
-            {
-                title: "JavaScript Function",
-                prompt: "Write a JavaScript function that [describe the function's purpose, e.g., 'fetches data from an API endpoint and displays it on the page']. Include comments explaining the code."
-            }
-        ]
-    },
-    {
-        name: "Marketing & Sales",
-        templates: [
-            {
-                title: "Ad Copy",
-                prompt: "Generate 3 variations of ad copy for a [product/service type, e.g., 'new mobile game'] targeting [target audience, e.g., 'casual gamers aged 25-40']. The tone should be [desired tone, e.g., 'energetic and exciting']."
-            },
-            {
-                title: "Blog Post Ideas",
-                prompt: "Brainstorm 5 blog post titles about [your topic, e.g., 'the benefits of remote work']. Each title should be engaging and SEO-friendly."
-            },
-            {
-                title: "Cold Email Outreach",
-                prompt: "Write a cold email to a potential client in the [client's industry] industry. The goal is to introduce my company's [product/service] and book a 15-minute call. The email should be concise and persuasive."
-            }
-        ]
-    },
-    {
-        name: "Creative Content",
-        templates: [
-            {
-                title: "Short Story Idea",
-                prompt: "Write a short story opening about a character who is a [character archetype, e.g., 'skeptical detective'] and discovers a [mysterious object, e.g., 'a compass that points to lost memories']."
-            },
-            {
-                title: "Video Script Hook",
-                prompt: "Generate 3 compelling hooks for a YouTube video about [your video topic, e.g., 'the history of ancient Rome']."
-            },
-            {
-                title: "Character Profile",
-                prompt: "Create a detailed character profile for a fantasy novel. The character is a [character role, e.g., 'young apprentice mage'] from [origin, e.g., 'a reclusive mountain monastery']."
-            }
-        ]
-    },
-    {
-        name: "Data Analysis",
-        templates: [
-            {
-                title: "Analyze Dataset",
-                prompt: "I have a dataset in CSV format with the following columns: [list column names]. Analyze this data to find [specific insight, e.g., 'the correlation between user engagement and purchase frequency']. Provide a summary of your findings."
-            },
-            {
-                title: "Generate Sample Data",
-                prompt: "Generate a sample JSON array of 10 items representing [data type, e.g., 'user profiles']. Each item should include fields for [field 1, e.g., 'name'], [field 2, e.g., 'email'], and [field 3, e.g., 'signup_date']."
-            }
-        ]
-    }
-];
-
-export const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, onForge, isLoading, onTemplateSelect, onClear }) => {
-  
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedPrompt = event.target.value;
-    if (selectedPrompt) {
-      onTemplateSelect(selectedPrompt);
-      event.target.value = ""; // Reset dropdown after selection
-    }
-  };
-
+export const InputPanel: React.FC<InputPanelProps> = ({ value, onChange, onForge, isLoading, onClear }) => {
   return (
-    <div className="bg-gray-800/50 rounded-lg border border-gray-700 p-6 flex flex-col h-full shadow-lg">
-      <h2 className="text-lg font-semibold text-gray-200 mb-4">Your Prompt Idea</h2>
-      <textarea
-        value={value}
-        onChange={onChange}
-        placeholder="e.g., 'Write a python script that takes a folder path and renames all .jpg files to have a timestamp prefix.'"
-        className="flex-grow w-full p-4 bg-gray-900/70 border border-gray-600 rounded-md resize-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-shadow duration-200 text-gray-300"
-        rows={12}
-        disabled={isLoading}
-      />
-      <div className="mt-4">
-        <label htmlFor="template-select" className="block text-sm text-gray-400 mb-2">Or start with a template:</label>
-        <select
-          id="template-select"
-          onChange={handleSelectChange}
+    <div className="flex flex-col gap-8 w-full text-left">
+      <div className="relative group">
+        <div className="flex items-center justify-between mb-2">
+          <label className="text-[10px] font-bold uppercase tracking-[0.4em] text-vesper-muted dark:text-zinc-500">
+            Architectural Intent
+          </label>
+          {value && (
+            <button 
+              onClick={onClear} 
+              className="text-[10px] font-bold uppercase tracking-widest text-vesper-muted hover:text-black dark:hover:text-white transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+        
+        <textarea
+          value={value}
+          onChange={onChange}
+          placeholder="DESCRIBE YOUR ARCHITECTURAL INTENT..."
+          className="vesper-input-line w-full pt-4 pb-2 text-xl md:text-2xl font-sans placeholder:uppercase placeholder:tracking-[0.2em] placeholder:text-black/10 dark:placeholder:text-white/10 resize-none min-h-[60px] focus:placeholder:opacity-0 transition-all dark:text-white leading-relaxed"
           disabled={isLoading}
-          className="w-full px-3 py-2 bg-gray-700/60 border border-gray-600 text-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors disabled:opacity-50"
-        >
-          <option value="">Select a template...</option>
-          {templateLibrary.map(category => (
-            <optgroup key={category.name} label={category.name}>
-              {category.templates.map(template => (
-                <option key={template.title} value={template.prompt}>
-                  {template.title}
-                </option>
-              ))}
-            </optgroup>
-          ))}
-        </select>
+          rows={1}
+          onInput={(e) => {
+            const target = e.target as HTMLTextAreaElement;
+            target.style.height = 'auto';
+            target.style.height = `${target.scrollHeight}px`;
+          }}
+        />
       </div>
-      <div className="mt-6 flex items-center gap-3">
-        <button
+
+      <div className="flex justify-end">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={onForge}
           disabled={isLoading || !value.trim()}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-500 disabled:bg-indigo-800/50 disabled:cursor-not-allowed disabled:text-gray-400 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-indigo-500"
+          className="vesper-button flex items-center gap-4 px-12 py-4 bg-transparent text-black dark:text-white disabled:opacity-30 disabled:hover:bg-transparent"
         >
-          {isLoading ? (
-            <>
-              <LoadingSpinnerIcon className="w-5 h-5 animate-spin" />
-              Forging...
-            </>
-          ) : (
-            <>
-              <ForgeIcon className="w-5 h-5" />
-              Forge Prompt
-            </>
-          )}
-        </button>
-        <button
-          onClick={onClear}
-          disabled={isLoading || !value.trim()}
-          className="px-4 py-3 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-500 disabled:bg-gray-700/50 disabled:cursor-not-allowed disabled:text-gray-400 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-gray-500"
-          aria-label="Clear input"
-        >
-          Clear
-        </button>
+          <span className="text-base font-bold uppercase tracking-widest">
+            {isLoading ? "FORGING..." : "FORGE ARCHITECTURE"}
+          </span>
+          {!isLoading && <span className="text-2xl leading-none">→</span>}
+          {isLoading && <LoadingSpinnerIcon className="w-5 h-5 animate-spin" />}
+        </motion.button>
       </div>
     </div>
   );

@@ -9,6 +9,15 @@ export interface StructuredPrompt {
     executable?: boolean;
   };
   constraints: string[];
+  magic_prompt?: {
+    checklist: string[];
+    formula: {
+      context: string | null;
+      task: string | null;
+      instruction: string | null;
+      data: string | null;
+    };
+  };
 }
 
 export interface HistoryItem {
