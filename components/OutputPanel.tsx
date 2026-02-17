@@ -122,32 +122,33 @@ export const OutputPanel: React.FC<OutputPanelProps> = ({ jsonOutput, isLoading,
                 useInlineStyles={true}
                 renderer={({ rows }) => {
                   if (!rows) return [];
-                  return rows.map((row: any, i: number) => (
-                    <div key={i} style={row?.properties?.style}>
-                      {row?.children?.map((token: any, j: number) => {
-                        if (!token) return null;
-                        
-                        // Defensive property extraction to fix TS18048
-                        const properties = (token as any).properties;
-                        const tokenProps = properties || {};
-                        
-                        const className = tokenProps.className;
-                        const isProperty = Array.isArray(className) 
-                          ? className.includes('property') 
-                          : typeof className === 'string' && className.includes('property');
-                        
-                        const tokenChildren = (token as any).children;
-                        const value = (tokenChildren && tokenChildren[0]?.value) || '';
-                        
-                        const styleFromProps = tokenProps.style || {};
-                        const customStyle = isProperty 
-                          ? { ...styleFromProps, color: getPropertyColor(String(value), isDark) }
-                          : styleFromProps;
+                  return rows.map((row: any, i: number) => {
+                    const rowStyle = row?.properties?.style || {};
+                    return (
+                      <div key={i} style={rowStyle}>
+                        {row?.children?.map((token: any, j: number) => {
+                          if (!token) return null;
                           
-                        return <span key={j} style={customStyle}>{value}</span>;
-                      })}
-                    </div>
-                  ));
+                          // Strict defensive programming for Vercel TS build
+                          const tokenProps = token.properties || {};
+                          const classList = tokenProps.className || [];
+                          
+                          const isProperty = Array.isArray(classList) 
+                            ? classList.includes('property') 
+                            : typeof classList === 'string' && classList.includes('property');
+                          
+                          const tokenValue = token.children?.[0]?.value || '';
+                          const baseStyle = tokenProps.style || {};
+                          
+                          const finalStyle = isProperty 
+                            ? { ...baseStyle, color: getPropertyColor(String(tokenValue), isDark) }
+                            : baseStyle;
+                            
+                          return <span key={j} style={finalStyle}>{tokenValue}</span>;
+                        })}
+                      </div>
+                    );
+                  });
                 }}
                 customStyle={{ background: 'transparent', margin: 0, padding: 0, fontSize: '0.92rem', lineHeight: '1.9' }}
               >
